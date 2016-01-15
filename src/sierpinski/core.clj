@@ -5,17 +5,21 @@
 
 (defn setup []
   (q/frame-rate 30)
-  {:tri-size (/ (q/screen-height) 3)})
+  {:tri-size (/ (q/screen-height) 3)
+   :depth 7})
 
-(defn update-size [size]
-  size)
+(defn depth-by-size [size]
+  (min (int (/ size 70))) 8)
 
 (defn update-state [state]
-  {:tri-size (update-size (:tri-size state))} )
+  (assoc state :depth (depth-by-size (:tri-size state))))
+
+(defn zoom-factor [size]
+  (max (int (/ size 200)) 1))
 
 (defn mouse-wheel [state event]
-  (update-in state [:tri-size] #(+ event %))
-)
+  (let [zoom-inc (* event (zoom-factor (:tri-size state)))]  
+    (update-in state [:tri-size] #(+ zoom-inc %))))
 
 (defn draw-triangles-in-list 
 ([] nil)
@@ -46,7 +50,7 @@
   (let [xmiddle (/ (q/width) 2)
         ymiddle (/ (q/height) 2)
         start-triangle (t/get-triangle (:tri-size state) xmiddle ymiddle)
-        triangles (t/finite-triangles 8 start-triangle)] 
+        triangles (t/finite-triangles (:depth state) start-triangle)] 
     (-> triangles
      keep-inbounds
      keep-min-size
