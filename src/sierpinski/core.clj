@@ -4,13 +4,11 @@
             [sierpinski.triangle-builder :as t]))
 
 (defn setup []
-  (q/frame-rate 30)
-  {:tri-size 250})
+  (q/frame-rate 20)
+  {:tri-size (/ (q/screen-height) 10)})
 
 (defn update-size [size]
-  (let [actual (- size 249)] 
-    (+ 250
-       (mod (+ 1 actual) 1500))))
+  (+ 5 size))
 
 (defn update-state [state]
   {:tri-size (update-size (:tri-size state))} )
@@ -41,24 +39,26 @@
 (defn draw-state [state]
   (q/background 255)
   (q/fill 255 255)
-  (let [middle 250 
-        start-triangle (t/get-triangle (:tri-size state) middle middle)
-        triangles (t/finite-triangles 8 start-triangle)] 
+  (let [xmiddle (/ (q/screen-width) 2)
+        ymiddle (/ (q/screen-height) 2)
+        start-triangle (t/get-triangle (:tri-size state) xmiddle ymiddle)
+        triangles (t/finite-triangles 7 start-triangle)] 
     (-> triangles
      keep-inbounds
      keep-min-size
      draw-triangles-in-list )))
 
+(defn -main [& args]
   (q/defsketch sierpinski
-               :title "Zooming Sierpinsky Triangle"
-               :size [500 500]
-               ; setup function called only once, during sketch initialization.
-               :setup setup
-               ; update-state is called on each iteration before draw-state.
-               :update update-state
-               :draw draw-state
-               :features [:keep-on-top]
-               ; This sketch uses functional-mode middleware.
-               ; Check quil wiki for more info about middlewares and particularly
-               ; fun-mode.
-               :middleware [m/fun-mode])
+    :title "Zooming Sierpinsky Triangle"
+    :size [(q/screen-width) (q/screen-height)]
+                                        ; setup function called only once, during sketch initialization.
+    :setup setup
+                                        ; update-state is called on each iteration before draw-state.
+    :update update-state
+    :draw draw-state
+    :features [:exit-on-close]
+                                        ; This sketch uses functional-mode middleware.
+                                        ; Check quil wiki for more info about middlewares and particularly
+                                        ; fun-mode.
+    :middleware [m/fun-mode]))

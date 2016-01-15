@@ -14,8 +14,6 @@
   [a b]
   (map #(int (/ (+ %1 %2) 2)) a b) )
 
-(def sub-triangles-memo (memoize sub-triangles))
-
  (defn sub-triangles [[a b c]]
      (let [ab (line-middle a b)
            ac (line-middle a c)
@@ -26,11 +24,6 @@
  (if (> depth 1)
    (+ (Math/pow 3 depth) (number-for-depth (dec depth)) )
    0))
-
-(defn finite-triangles [depth initial]
-  (drop 
-   (number-for-depth (dec depth)) 
-   (take (number-for-depth depth) (infinite-triangles initial))))
                               
 (defn infinite-triangles
   ([initial-triangle]
@@ -41,3 +34,8 @@
       (concat
        inner-tri
        (apply infinite-triangles (concat remaining-triangles inner-tri)))))))
+
+(defn finite-triangles [depth initial]
+  (drop 
+   (number-for-depth (dec depth)) 
+   (take (number-for-depth depth) (infinite-triangles initial))))
