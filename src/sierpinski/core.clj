@@ -5,13 +5,17 @@
 
 (defn setup []
   (q/frame-rate 20)
-  {:tri-size (/ (q/screen-height) 10)})
+  {:tri-size (/ (q/screen-height) 3)})
 
 (defn update-size [size]
-  (+ 5 size))
+  size)
 
 (defn update-state [state]
   {:tri-size (update-size (:tri-size state))} )
+
+(defn mouse-wheel [state event]
+  {:tri-size (+ event (:tri-size state))}
+)
 
 (defn draw-triangles-in-list 
 ([] nil)
@@ -42,7 +46,7 @@
   (let [xmiddle (/ (q/screen-width) 2)
         ymiddle (/ (q/screen-height) 2)
         start-triangle (t/get-triangle (:tri-size state) xmiddle ymiddle)
-        triangles (t/finite-triangles 7 start-triangle)] 
+        triangles (t/finite-triangles 8 start-triangle)] 
     (-> triangles
      keep-inbounds
      keep-min-size
@@ -56,9 +60,12 @@
     :setup setup
                                         ; update-state is called on each iteration before draw-state.
     :update update-state
+    :mouse-wheel mouse-wheel
     :draw draw-state
     :features [:exit-on-close]
                                         ; This sketch uses functional-mode middleware.
                                         ; Check quil wiki for more info about middlewares and particularly
                                         ; fun-mode.
     :middleware [m/fun-mode]))
+
+(-main)

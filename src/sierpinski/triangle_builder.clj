@@ -35,7 +35,9 @@
        inner-tri
        (apply infinite-triangles (concat remaining-triangles inner-tri)))))))
 
+(def infinite-memo (memoize infinite-triangles))
+
 (defn finite-triangles [depth initial]
   (drop 
    (number-for-depth (dec depth)) 
-   (take (number-for-depth depth) (infinite-triangles initial))))
+   (take (number-for-depth depth) (infinite-memo initial))))
