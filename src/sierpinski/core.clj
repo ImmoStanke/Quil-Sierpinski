@@ -10,13 +10,13 @@
    :depth 7})
 
 (defn depth-by-size [size]
-  (min (int (/ size 70))) 8)
+  (min (int (/ size 70)) 8))
 
 (defn update-state [state]
   (assoc state :depth (depth-by-size (:tri-size state))))
 
 (defn zoom-factor [size]
-  (max (int (/ size 200)) 1))
+(max (int (/ size 200)) 1))
 
 (defn mouse-wheel [state event]
   (let [zoom-inc (* event (zoom-factor (:tri-size state)))]  

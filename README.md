@@ -1,14 +1,13 @@
 # sierpinski
 
-A Quil sketch of a zooming Sierpinski Triangle (
+A Quil sketch of a Sierpinski Triangle which you can zoom in and out.
 
 ## Usage
 
-LightTable - open `core.clj` and press `Ctrl+Shift+Enter` to evaluate the file.
+Just run `lein run` to run or `lein uberjar` to build the executable.
+To start in REPL, use `(require 'sierpinski.core)` and then run `(-main)`.
 
-Emacs - run cider, open `core.clj` and press `C-c C-k` to evaluate the file.
-
-REPL - run `(require 'sierpinski.core)`.
+Use mouse wheel to zoom in and out.
 
 ## License
 
