@@ -1,6 +1,6 @@
 (ns sierpinski.triangle-builder
+(:gen-class)
 (:import [java.lang.Math]))
-
 
 ; a
 ;c b
@@ -12,7 +12,7 @@
 
 (defn line-middle
   [a b]
-  (map #(int (/ (+ %1 %2) 2)) a b) )
+  (map #(int (/ (+ %1 %2) 2)) a b))
 
  (defn sub-triangles [[a b c]]
      (let [ab (line-middle a b)
@@ -22,7 +22,7 @@
 
 (defn- number-for-depth [depth] 
  (if (> depth 1)
-   (+ (Math/pow 3 depth) (number-for-depth (dec depth)) )
+   (+ (Math/pow 3 depth) (number-for-depth (dec depth)))
    0))
                               
 (defn infinite-triangles

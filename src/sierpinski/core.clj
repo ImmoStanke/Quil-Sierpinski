@@ -1,5 +1,6 @@
 (ns sierpinski.core
-  (:require [quil.core :as q]
+ (:gen-class)
+ (:require [quil.core :as q]
             [quil.middleware :as m]
             [sierpinski.triangle-builder :as t]))
 
