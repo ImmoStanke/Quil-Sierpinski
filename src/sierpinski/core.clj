@@ -5,50 +5,15 @@
 
 (defn setup []
   (q/frame-rate 30)
-  {:tri-size 250
-   :depth 2
-   :frame 1})
-
+  {:tri-size 250})
 
 (defn update-size [size]
-  (let [actual (- size 250)] 
+  (let [actual (- size 249)] 
     (+ 250
-       (mod 
-        (+
-         actual
-         actual)
-
-        500)))
-)
+       (mod (+ 1 actual) 1500))))
 
 (defn update-state [state]
-  {:tri-size (update-size (:tri-size state))
-   :depth (+ 2 (mod  (if (= 29 (:frame state)) (inc (:depth state)) (:depth state)) 5))
-   :frame (mod (inc (:frame state)) 30)
-}
-  ;{:tri-size 50}
-  )
-
-
-
-  (defn draw-nested-triangle [n old-coordinates]
-    (if (> n 0)
-
-      (let [new-coords (map t/line-middle old-coordinates (rest (take 4 (cycle old-coordinates))))
-            left-tri [(first new-coords) (second old-coordinates) (second new-coords)]
-            mid-tri [(first old-coordinates) (first new-coords) (last new-coords)]
-            right-tri [(last new-coords) (second new-coords) (last old-coordinates)]
-            ]
-
-        (apply q/triangle (apply concat old-coordinates))
-
-        (draw-nested-triangle (- n 1) left-tri)
-        (draw-nested-triangle (- n 1) mid-tri)
-        (recur (- n 1) right-tri)
-
-        )
-      )
-    )
+  {:tri-size (update-size (:tri-size state))} )
 
 (defn draw-triangles-in-list 
 ([] nil)
@@ -57,13 +22,33 @@
    (apply q/triangle (apply concat (first tri-list)))
    (recur (rest tri-list)))))
 
+;[ax ay][bx by][cx cy]
+(defn out-of-bounds? [[[_ highest] [rightmost lowest] [leftmost _]]]
+  (or (> highest (q/height))
+      (> leftmost (q/width))
+      (<= lowest 0)
+      (<= rightmost 0)))
+
+(defn keep-inbounds [l] 
+  (remove out-of-bounds? l))
+
+(defn is-point? [[[_ ay] [_ by] _ ]]
+ (= ay by))
+
+(defn keep-min-size [l] l
+  (remove is-point? l))
 
 (defn draw-state [state]
   (q/background 255)
   (q/fill 255 255)
-  
-  (draw-triangles-in-list (t/finite-triangles 7 (t/get-triangle (:tri-size state) 250 250)) )
-  )
+  (let [middle 250 
+        start-triangle (t/get-triangle (:tri-size state) middle middle)
+        triangles (t/finite-triangles 8 start-triangle)] 
+    (-> triangles
+     keep-inbounds
+     keep-min-size
+     draw-triangles-in-list )))
+
   (q/defsketch sierpinski
                :title "Zooming Sierpinsky Triangle"
                :size [500 500]

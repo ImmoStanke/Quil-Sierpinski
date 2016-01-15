@@ -12,9 +12,7 @@
 
 (defn line-middle
   [a b]
-
-  (map #(/ (+ %1 %2) 2) a b)
-  )
+  (map #(int (/ (+ %1 %2) 2)) a b) )
 
 (def sub-triangles-memo (memoize sub-triangles))
 
@@ -22,37 +20,24 @@
      (let [ab (line-middle a b)
            ac (line-middle a c)
            bc (line-middle b c)]
-       [[a ab ac] [ab b bc] [ac bc c]]
-       )
-     )
+       [[a ab ac] [ab b bc] [ac bc c]]))
 
 (defn- number-for-depth [depth] 
  (if (> depth 1)
    (+ (Math/pow 3 depth) (number-for-depth (dec depth)) )
-   (0)
- ))
+   0))
 
 (defn finite-triangles [depth initial]
-
-  )
-                                        ;lazy seq of triangle coordinates
-
+  (drop 
+   (number-for-depth (dec depth)) 
+   (take (number-for-depth depth) (infinite-triangles initial))))
+                              
 (defn infinite-triangles
   ([initial-triangle]
-   (let [[top right left] (sub-triangles initial-triangle)]
-     (infinite-triangles top right left))
-   )
+   (apply infinite-triangles (sub-triangles initial-triangle)))
   ([first-triangle & remaining-triangles]
-   (let [[top right left] (sub-triangles-memo first-triangle)]
-                                        ; (println "recuring with" top right left)
-
+   (let [inner-tri (sub-triangles first-triangle)]
      (lazy-seq
       (concat
-       [top right left]
-       (apply infinite-triangles (concat  remaining-triangles [top right left]))
-       
-       ))
-     )
-   ))
-
-(take 10 (infinite-triangles [[100 100] [150 150] [150 50]]))
+       inner-tri
+       (apply infinite-triangles (concat remaining-triangles inner-tri)))))))
