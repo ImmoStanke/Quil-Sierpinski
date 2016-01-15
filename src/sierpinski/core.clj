@@ -4,7 +4,7 @@
             [sierpinski.triangle-builder :as t]))
 
 (defn setup []
-  (q/frame-rate 20)
+  (q/frame-rate 30)
   {:tri-size (/ (q/screen-height) 3)})
 
 (defn update-size [size]
@@ -14,7 +14,7 @@
   {:tri-size (update-size (:tri-size state))} )
 
 (defn mouse-wheel [state event]
-  {:tri-size (+ event (:tri-size state))}
+  (update-in state [:tri-size] #(+ event %))
 )
 
 (defn draw-triangles-in-list 
@@ -43,8 +43,8 @@
 (defn draw-state [state]
   (q/background 255)
   (q/fill 255 255)
-  (let [xmiddle (/ (q/screen-width) 2)
-        ymiddle (/ (q/screen-height) 2)
+  (let [xmiddle (/ (q/width) 2)
+        ymiddle (/ (q/height) 2)
         start-triangle (t/get-triangle (:tri-size state) xmiddle ymiddle)
         triangles (t/finite-triangles 8 start-triangle)] 
     (-> triangles
@@ -55,7 +55,7 @@
 (defn -main [& args]
   (q/defsketch sierpinski
     :title "Zooming Sierpinsky Triangle"
-    :size [(q/screen-width) (q/screen-height)]
+    :size [(- (q/screen-width) 100) (- (q/screen-height) 150)]
                                         ; setup function called only once, during sketch initialization.
     :setup setup
                                         ; update-state is called on each iteration before draw-state.
@@ -67,5 +67,3 @@
                                         ; Check quil wiki for more info about middlewares and particularly
                                         ; fun-mode.
     :middleware [m/fun-mode]))
-
-(-main)
