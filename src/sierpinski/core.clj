@@ -2,10 +2,13 @@
  (:gen-class)
  (:require [quil.core :as q]
             [quil.middleware :as m]
-            [sierpinski.triangle-builder :as t]))
+            [sierpinski.triangle-builder :as t]
+            [sierpinski.new-triangle-builder :as nt]
+
+           ))
 
 (defn setup []
-  (q/frame-rate 30)
+  (q/frame-rate 60)
   {:tri-size (/ (q/screen-height) 3)
    :depth 7})
 
@@ -57,6 +60,13 @@
      keep-min-size
      draw-triangles-in-list )))
 
+(defn new-draw-state [state]
+  (q/background 255)
+  (q/fill 255 255)
+  (let [triangles (nt/just-enough-triangles [10 (- (q/height) 10)] 10 (:tri-size state))]
+    (doall (map #(apply q/triangle (flatten %)) triangles))
+    ))
+
 (defn -main [& args]
   (q/defsketch sierpinski
     :title "Zooming Sierpinsky Triangle"
@@ -66,8 +76,8 @@
                                         ; update-state is called on each iteration before draw-state.
     :update update-state
     :mouse-wheel mouse-wheel
-    :draw draw-state
-    :features [:exit-on-close]
+    :draw new-draw-state
+               ;:features [:exit-on-close]
                                         ; This sketch uses functional-mode middleware.
                                         ; Check quil wiki for more info about middlewares and particularly
                                         ; fun-mode.
