@@ -16,8 +16,7 @@
 (defn translate-triangle [trans-vector triangle]
   (map #(add-point % trans-vector) triangle))
 
-(defn line-middle
-  [a b]
+(defn line-middle [a b]
   (map #(int (/ (+ %1 %2) 2)) a b))
 
 (defn sub-triangles [[a b c]]
@@ -46,6 +45,5 @@
            up-translate (partial translate-triangle [(/ current-size 2) (* -1 current-size)])
            up-triangles (map up-translate previous-triangles)
            new-triangles (concat previous-triangles right-triangles up-triangles)]
-       (recur left-down-corner (* 2 current-size) target-size new-triangles)
-       )
+       (recur left-down-corner (* 2 current-size) target-size new-triangles))
      previous-triangles)))
